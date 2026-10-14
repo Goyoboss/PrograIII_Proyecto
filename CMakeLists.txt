@@ -25,13 +25,20 @@ option(MINIDB_ASAN "Compilar con AddressSanitizer" OFF)
 
 file(GLOB FUENTES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cpp)
 file(GLOB FUENTES_EXP CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/experimentos/*.cpp)
-set(FUENTES_SIN_MAIN ${FUENTES})
+set(FUENTES_SIN_MAIN ${FUENTES}
+        include/TablaHash.h
+        include/TablaHash.h
+        include/TablaHash.h
+        include/TablaHash.h)
 list(REMOVE_ITEM FUENTES_SIN_MAIN ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
 set(OBJETIVOS minidb)
-add_executable(minidb ${FUENTES})
+add_executable(minidb ${FUENTES}
+        src/TablaHash.cpp
+        include/TablaHash.h)
 if(FUENTES_EXP)
-    add_executable(experimentos ${FUENTES_EXP} ${FUENTES_SIN_MAIN})
+    add_executable(experimentos ${FUENTES_EXP} ${FUENTES_SIN_MAIN}
+            include/TablaHash.h)
     list(APPEND OBJETIVOS experimentos)
 endif()
 
