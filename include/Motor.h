@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "Registro.h"
+#include "TablaHash.h"
 
 class Motor {
 public:
@@ -58,6 +59,7 @@ public:
 
 private:
     // TODO: tus estructuras
+    HashTable table;            // estructura de la tabla hash
 };
 
 #endif

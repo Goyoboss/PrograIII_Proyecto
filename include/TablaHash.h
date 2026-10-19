@@ -47,5 +47,7 @@ public:
     int searchIndex(int id);                    //buscar un índice - la utiliza remove y get
     [[nodiscard]] int hashFunction(int key) const; 		    // función hash a utiliza
     void rehash();				                // cuando la tabla está muy llena la va a agrandar
+
+    int getElementCount();          // obtener el tamaño de la 
 };
 #endif //MINIDB_TABLAHASH_H

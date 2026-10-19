@@ -8,7 +8,20 @@
 Motor::Motor() {}
 Motor::~Motor() {}
 
-bool Motor::insertar(const Registro& r) { (void)r; return false; }
+bool Motor::insertar(const Registro& r) {
+    // se asigna un espacio de memoria con una copia dinámica realizada con "new"
+    auto* newRegistro = new Registro(r);
+
+    // se llama el métod0 de insert del arhivo de tablas hash
+    bool insertado = table.insert(newRegistro);
+
+    // si no se logra insertar, entonces se elimina ese espacio en memoria
+    if (!insertado) {
+        delete newRegistro;
+        return false;
+    }
+    return true;
+}
 bool Motor::eliminar(int id) { (void)id; return false; }
 bool Motor::actualizar(int id, int nuevoValor) { (void)id; (void)nuevoValor; return false; }
 
