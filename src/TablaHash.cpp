@@ -104,7 +104,6 @@ bool HashTable::insert(Registro* reg) {
     }
     return false;
 }
-}
 
 
 // función que determina si un número es primo o no

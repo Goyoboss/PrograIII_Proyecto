@@ -22,10 +22,25 @@ bool Motor::insertar(const Registro& r) {
     }
     return true;
 }
-bool Motor::eliminar(int id) { (void)id; return false; }
-bool Motor::actualizar(int id, int nuevoValor) { (void)id; (void)nuevoValor; return false; }
+bool Motor::eliminar(int id) {
+    return table.remove(id);
+}
 
-bool Motor::obtener(int id, Registro& salida) { (void)id; (void)salida; return false; }
+bool Motor::actualizar(int id, int nuevoValor) {
+    return table.update(id, nuevoValor);
+}
+
+bool Motor::obtener(int id, Registro& salida) {
+    // se llama a la función get y se guarda con su dirección en memoria
+    Registro* found = table.get(id);
+
+    // si es que se encuentra se copian sus datos
+    if (found != nullptr) {
+        salida = *found;
+        return true;
+    }
+    return false;   // si no se encuentra
+}
 
 void Motor::rango(int a, int b, int limite, ResultadoRango& salida) {
     (void)a; (void)b; (void)limite;
@@ -56,4 +71,6 @@ bool Motor::verificar(char* mensaje, int capacidad) {
     return true;
 }
 
-void Motor::imprimirStats(std::ostream& os) { os << "(sin estadisticas)\n"; }
+void Motor::imprimirStats(std::ostream& os) {
+    os << "Casillas ocupadas: " << table.getElementCount();
+}
