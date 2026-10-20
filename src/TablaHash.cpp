@@ -166,3 +166,7 @@ void HashTable::rehash() {
     // se quitan los deleted
     deletedCount = 0;
 }
+
+int HashTable::getElementCount() const {
+    return elementCount;
+}

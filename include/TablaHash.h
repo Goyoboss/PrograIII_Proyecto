@@ -48,6 +48,6 @@ public:
     [[nodiscard]] int hashFunction(int key) const; 		    // función hash a utiliza
     void rehash();				                // cuando la tabla está muy llena la va a agrandar
 
-    int getElementCount();          // obtener el tamaño de la 
+    int getElementCount() const;          // obtener el tamaño de la tabla
 };
 #endif //MINIDB_TABLAHASH_H

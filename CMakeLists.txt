@@ -29,16 +29,21 @@ set(FUENTES_SIN_MAIN ${FUENTES}
         include/TablaHash.h
         include/TablaHash.h
         include/TablaHash.h
-        include/TablaHash.h)
+        include/TablaHash.h
+        include/AVL.h
+        include/AVL.h)
 list(REMOVE_ITEM FUENTES_SIN_MAIN ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
 set(OBJETIVOS minidb)
 add_executable(minidb ${FUENTES}
         src/TablaHash.cpp
-        include/TablaHash.h)
+        include/TablaHash.h
+        include/AVL.h
+        src/AVL.cpp)
 if(FUENTES_EXP)
     add_executable(experimentos ${FUENTES_EXP} ${FUENTES_SIN_MAIN}
-            include/TablaHash.h)
+            include/TablaHash.h
+            include/AVL.h)
     list(APPEND OBJETIVOS experimentos)
 endif()
 
