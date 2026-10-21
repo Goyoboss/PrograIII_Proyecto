@@ -66,6 +66,11 @@ bool HashTable::update(int id, int newVal) {
 }
 
 bool HashTable::insert(Registro* reg) {
+    // si el factor de carga es mayor al 50% entonces se llama a la función rehash
+    // para que tenga una nueva capacidad
+    if ((elementCount + deletedCount) >= capacity / 2) {
+        rehash();
+    }
     int id = reg->id;       // puntero hacia el valor del id
     int deleted=-1;         // contar los espacios que han sido eliminados
     for (int i=0; i<capacity; ++i) {                    // buscar en toda la tabla
