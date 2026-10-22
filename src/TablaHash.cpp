@@ -4,9 +4,40 @@
 #include "TablaHash.h"
 #include<iostream>
 
+// constructor de la clase
+HashTable::HashTable(int initialCapacity) {
+    capacity = initialCapacity;
+    elementCount = 0;
+    deletedCount = 0;
+
+    // espacio de memoria para todas las entradas
+    table = new Entry[capacity];
+
+    // se inicializan las casillas para que sea de tamaño de la capacidad y todas estén
+    // marcadas como vacías
+    for (int i = 0; i < capacity; ++i) {
+        table[i].state = SlotState::EMPTY_SLOT;
+        table[i].reg = nullptr;
+    }
+}
+
+// destructor de la clase
+HashTable::~HashTable() {
+    // se borran los registros que estén marcados como ocupados
+    for (int i = 0; i < capacity; ++i) {
+        if (table[i].state == SlotState::OCCUPIED) {
+            // libera el registro
+            delete table[i].reg;
+        }
+    }
+
+    // borra la tabla
+    delete[] table;
+}
+
 // función hash: obtenemos el módulo del id entre la capacidad de la tabla, que inicialmente es 17
 int HashTable::hashFunction(int id) const {
-    int index = id%capacity;
+    int const index = id%capacity;
     return index;
 }
 
