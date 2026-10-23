@@ -10,24 +10,49 @@ Motor::~Motor() {}
 
 bool Motor::insertar(const Registro& r) {
     // se asigna un espacio de memoria con una copia dinámica realizada con "new"
-    auto* newRegistro = new Registro(r);
+    Registro* nuevoRegistro = new Registro(r);
 
-    // se llama el métod0 de insert del arhivo de tablas hash
-    bool insertado = table.insert(newRegistro);
-
-    // si no se logra insertar, entonces se elimina ese espacio en memoria
-    if (!insertado) {
-        delete newRegistro;
+    // se inserta en la tabla Hash
+    if (!table.insert(nuevoRegistro)) {
+        delete nuevoRegistro; // ID duplicado, liberamos memoria
         return false;
     }
+
+    // si la tabla lo acepta, se inserta en el árbol AVL
+    avl.insert(nuevoRegistro);
     return true;
 }
 bool Motor::eliminar(int id) {
+    // se obtiene el puntero del registro existente antes de borrarlo
+    Registro* reg = table.get(id);
+    if (reg == nullptr) {
+        return false; // en caso de que el ID no existe
+    }
+
+    // se quita del árbol
+    avl.remove(reg);
+    // se quita de la tabla
     return table.remove(id);
 }
 
-bool Motor::actualizar(int id, int nuevoValor) {
-    return table.update(id, nuevoValor);
+bool Motor::actualizar(int id, int newVal) {
+    Registro* reg = table.get(id);
+    if (reg == nullptr) {
+        return false; // El ID no existe
+    }
+    // si el valor ya existe entonces no se hace nada
+    if (reg->valor == newVal) {
+        return true;
+    }
+    // quitar el valor viejo del árbol
+    avl.remove(reg);
+
+    // actualizar en la tabla hash
+    table.update(id, newVal);
+
+    // insertar el nuevo valor en el avl
+    avl.insert(reg);
+    return true;
 }
 
 bool Motor::obtener(int id, Registro& salida) {
@@ -50,14 +75,28 @@ void Motor::rango(int a, int b, int limite, ResultadoRango& salida) {
 }
 
 int  Motor::contar(int a, int b) { (void)a; (void)b; return 0; }
-bool Motor::kesimo(int k, Registro& salida) { (void)k; (void)salida; return false; }
+bool Motor::kesimo(int k, Registro& salida) {
+    Registro* regFound = nullptr;
+
+    // se llama al avl y la función getKesimo, si encuentra el valor
+    // guardará en memoria su dirección y se guardará en regEncontrado
+    if (avl.getKesimo(k, regFound)) {
+        salida = *regFound; // Copiamos todos los datos del registro a la variable 'salida'
+        return true;
+    }
+
+    return false; // Retorna false si 'k' está fuera de rango o el árbol está vacío
+}
 int  Motor::top(int k, int categoria, Registro* salida) { (void)k; (void)categoria; (void)salida; return 0; }
 
 void Motor::iniciarTransaccion() {}
 bool Motor::confirmar() { return false; }
 bool Motor::revertir() { return false; }
 
-int  Motor::altura() const { return -1; }
+int  Motor::altura() const {
+    return avl.getHeight();
+}
+
 void Motor::configurarCache(int capacidad) { (void)capacidad; }
 
 EstadisticasCache Motor::estadisticasCache() const {

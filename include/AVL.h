@@ -38,6 +38,10 @@ public:
     bool remove(Registro* reg);     // bool para quitar un registro del árbol
     int getHeight() const;          // obtener la altura del árbol
 
+    // --- Consultas ordenadas ---
+
+    bool getKesimo(int k, Registro*& salida) const;
+
 private:
     Node* root;         // puntero a la punta del árbol
 
@@ -59,6 +63,9 @@ private:
     Node* getMinNode(Node* node);
     // auxiliar para el destructor
     void destroyRecursive(Node* node);
+
+
+    bool getKesimoRecursive(Node* node, int k, Registro*& salida) const;
 };
 
 
