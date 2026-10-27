@@ -68,16 +68,18 @@ bool Motor::obtener(int id, Registro& salida) {
 }
 
 void Motor::rango(int a, int b, int limite, ResultadoRango& salida) {
-    (void)a; (void)b; (void)limite;
-    salida.n = 0;
-    salida.firma = 0;
-    salida.nFilas = 0;
+        // se llama a la función getRango del avl
+        avl.getRango(a, b, limite, salida);
 }
 
-int  Motor::contar(int a, int b) { (void)a; (void)b; return 0; }
+int  Motor::contar(int a, int b) {
+    // se llama al avl
+    // devuelve un entero para saber cuantos registros existen entre a y b
+    return avl.contarRango(a, b);
+}
+
 bool Motor::kesimo(int k, Registro& salida) {
     Registro* regFound = nullptr;
-
     // se llama al avl y la función getKesimo, si encuentra el valor
     // guardará en memoria su dirección y se guardará en regEncontrado
     if (avl.getKesimo(k, regFound)) {
@@ -87,7 +89,9 @@ bool Motor::kesimo(int k, Registro& salida) {
 
     return false; // Retorna false si 'k' está fuera de rango o el árbol está vacío
 }
-int  Motor::top(int k, int categoria, Registro* salida) { (void)k; (void)categoria; (void)salida; return 0; }
+int Motor::top(int k, int categoria, Registro* salida) {
+    return avl.getTop(k, categoria, salida);    // llama al avl
+}
 
 void Motor::iniciarTransaccion() {}
 bool Motor::confirmar() { return false; }

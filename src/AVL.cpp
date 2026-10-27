@@ -258,3 +258,114 @@ bool AVLTree::getKesimoRecursive(Node* node, int k, Registro*& salida) const {
         return getKesimoRecursive(node->right, k - leftSize - 1, salida);
     }
 }
+
+// hacer una búsqueda binaria porque cada nodo sabe cuantos hijos tiene (tamaño)
+// se le da un valor máximo y pasa por la derecha y/o la izquierda
+int AVLTree::countLessOrEqual(int max_val) const {
+    int count = 0;
+    Node* current = root;
+    while (current != nullptr) {
+        if (current->reg->valor <= max_val) {
+            count += getSize(current->left) + 1;
+            current = current->right;
+        } else {
+            current = current->left;
+        }
+    }
+    return count;
+}
+
+// busca el valor mínimo en el árbol
+int AVLTree::countStrictlyLess(int min_val) const {
+    int count = 0;
+    Node* current = root;
+
+    while (current != nullptr) {
+        if (current->reg->valor < min_val) {
+            // El nodo actual y TODOS los de su izquierda son estrictamente menores
+            count += getSize(current->left) + 1;
+            // Seguimos buscando más a la derecha
+            current = current->right;
+        } else {
+            // El valor es mayor o igual, buscamos algo más pequeño en la izquierda
+            current = current->left;
+        }
+    }
+    return count;
+}
+
+// hace la resta del rango
+// cuántos registros tienen un valor entre a y b?
+int AVLTree::contarRango(int a, int b) const {
+    if (a > b) return 0;
+    return countLessOrEqual(b) - countStrictlyLess(a);
+}
+
+void AVLTree::getRango(int a, int b, int limite, ResultadoRango& salida) const {
+    // Inicializamos la salida desde cero (limpiamos basuras en memoria)
+    salida.nFilas = 0;
+    // llama a la función getRangoRecursive
+    getRangoRecursive(root, a, b, limite, salida);
+}
+
+// se da un rango entre a y b, tmb un límite, es decir que en cuanto encuentre un número (denominado límite)
+// dejará de buscar más resultados. Si pones a=6, b=25, limite=4, devolverá los primeros 4 registros entre 6 y 25.
+void AVLTree::getRangoRecursive(Node* node, int a, int b, int limite, ResultadoRango& salida) const {
+    if (node == nullptr) return;
+
+    // si ya se llega al límite máximo que pidieron ya no se continua
+    if (salida.nFilas >= limite) return;
+
+    // se va a la izquierda si hay posibilidad de que haya registros
+    if (node->reg->valor > a) {
+        getRangoRecursive(node->left, a, b, limite, salida);
+    }
+
+    // si con lo de la izquierda ya se llenó el límite, entonces se para
+    if (salida.nFilas >= limite) return;
+
+    // si llega a la raíz valora si entra entre el rango a y b
+    if (node->reg->valor >= a && node->reg->valor <= b) {
+        salida.nFilas++; // Contabilizamos que hallamos un registro válido
+    }
+
+    // si ya está lleno el límite no va a la derecha, si no lo está la recorre
+    if (salida.nFilas >= limite) return;
+
+    // va a la izquierda a por registros
+    if (node->reg->valor < b) {
+        getRangoRecursive(node->right, a, b, limite, salida);
+    }
+}
+
+// función que devuelve un entero que busca los valores más grandes
+int AVLTree::getTop(int k, int categoria, Registro* salida) const {
+    int count = 0; // inicializa en 0
+    // si se pide 0 elementos se devuelve 0
+    if (k <= 0) return 0;
+    // llama a otra función
+    getTopRecursive(root, k, categoria, salida, count);
+    return count; // Devolvemos la cantidad real de registros que escribimos
+}
+
+void AVLTree::getTopRecursive(Node* node, int k, int categoria, Registro* salida, int& count) const {
+    // si el nodo es nulo o (||) si la k ya se llenó para aquí
+    if (node == nullptr || count >= k) return;
+
+    // va a la derecha - los valores más grandes
+    getTopRecursive(node->right, k, categoria, salida, count);
+
+    // si ya se llenó la k se para
+    if (count >= k) return;
+    // si coincide la categoría entonces se guarda el registro
+    if (node->reg->categoria == categoria) {
+        salida[count] = *(node->reg);
+        ++count;  // incremento
+    }
+
+    // si ya se llenó las k, entonces para aquí
+    if (count >= k) return;
+
+    // ahora va hacia la izquierda a ver que no se hayan llenado las k
+    getTopRecursive(node->left, k, categoria, salida, count);
+}

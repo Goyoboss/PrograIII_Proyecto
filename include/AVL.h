@@ -38,9 +38,12 @@ public:
     bool remove(Registro* reg);     // bool para quitar un registro del árbol
     int getHeight() const;          // obtener la altura del árbol
 
-    // --- Consultas ordenadas ---
+    // --- Consultas de Motor.h ---
 
     bool getKesimo(int k, Registro*& salida) const;
+    int contarRango(int a, int b) const;
+    void getRango(int a, int b, int limite, ResultadoRango& salida) const;
+    int getTop(int k, int categoria, Registro* salida) const;
 
 private:
     Node* root;         // puntero a la punta del árbol
@@ -66,6 +69,10 @@ private:
 
 
     bool getKesimoRecursive(Node* node, int k, Registro*& salida) const;
+    int countLessOrEqual(int val) const;
+    int countStrictlyLess(int val) const;
+    void getRangoRecursive(Node* node, int a, int b, int limite, ResultadoRango& salida) const;
+    void getTopRecursive(Node* node, int k, int categoria, Registro* salida, int& count) const;
 };
 
 
